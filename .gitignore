@@ -1,0 +1,22 @@
+.DS_Store
+env.sh
+
+# Virtual environments
+venv
+
+# PyCharm
+.idea
+
+# Emacs
+*~
+\#*\#
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Test and coverage files
+.pytest_cache
+.coverage
+htmlcov/

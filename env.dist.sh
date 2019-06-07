@@ -1,0 +1,3 @@
+export SLACK_API_TOKEN=""
+export SLACK_CHANNEL_ID=""
+export GOOGLE_FORM_URL=""
