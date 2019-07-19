@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from winbot.app import AppFactory
 
 app = AppFactory.create()

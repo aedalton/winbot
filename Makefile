@@ -47,33 +47,7 @@ clean:                        ## Remove artifacts
 	@rm -rf .pytest_cache .coverage htmlcov
 
 lint:                         ## Check PEP8 compliance and code style
-	@bendpylint ./winbot #./tests/unit
-	@pycodestyle ./winbot #./tests/unit
+	@pylint ./winbot
+	@pycodestyle ./winbot
 
-test:                         ## Run local (unit & functional) tests
-	@coverage run -m pytest -v tests/unit
-
-test-unit:                    ## Run unit tests
-	@coverage run -m pytest -v tests/unit
-
-test-functional:              ## Run functional tests
-	@coverage run -m pytest -v tests/functional
-
-test-integration:             ## Run integration tests
-	@echo "You are about to run integration tests which $$(tput bold)might$$(tput sgr0) affect production resources"
-	@read -n1 -r -p "Press any key to continue... (or CTRL+C to abort)" key
-	@coverage run -m pytest -v tests/integration
-
-test-all:                     ## Run all tests (unit, functional & integration)
-	@echo "You are about to run integration tests which $$(tput bold)might$$(tput sgr0) affect production resources"
-	@read -n1 -r -p "Press any key to continue... (or CTRL+C to abort)" key
-	@coverage run -m pytest -v tests/
-
-coverage: test                ## Show coverage report
-	@coverage report -m --fail-under=74
-
-html: test                    ## Show detailed coverage report in HTML
-	@coverage html
-	@open htmlcov/index.html
-
-prcheck: lint coverage        ## Perform all necessary code checks
+prcheck: lint                 ## Perform all necessary code checks
