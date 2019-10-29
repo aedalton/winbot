@@ -17,6 +17,15 @@ class AppFactory:  # pylint: disable=too-few-public-methods
 
         msg_generator = MsgGenerator()
 
+        @app.route('/health', methods=['GET'])
+        def health():  # pylint: disable=unused-variable
+            response = app.response_class(
+                response=json.dumps({"health": "okay"}),
+                status=200,
+                mimetype='application/json'
+            )
+            return response
+
         @app.route('/win', methods=['POST'])
         def win():  # pylint: disable=unused-variable
             response_text = msg_generator.get_winner_msg(

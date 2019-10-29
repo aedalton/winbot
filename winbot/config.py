@@ -8,4 +8,4 @@ GOOGLE_FORM_URL = os.environ["GOOGLE_FORM_URL"]
 
 
 class AppSettings:  # pylint: disable=too-few-public-methods
-    DEBUG = False
+    DEBUG = True

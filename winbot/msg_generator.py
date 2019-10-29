@@ -1,7 +1,10 @@
 # pylint: disable=missing-docstring
 import slack
 
-from winbot import config
+from winbot import config, utils
+
+
+LOGGER = utils.get_logger("WINBOT")
 
 
 class RequestParsingException(Exception):
@@ -12,7 +15,6 @@ class MemberNotFoundException(Exception):
     pass
 
 
-# theres a better way to do this, but for sake of speed
 SLACK_CONN = slack.WebClient(token=config.SLACK_API_TOKEN)
 
 
@@ -40,7 +42,6 @@ class MembersCache():
     @property
     def channel_members(self):
         # get info for the `#winning` channel
-
         channel_members_detail = {}
 
         for member in self.__all_slack_members:
@@ -57,6 +58,7 @@ class MsgGenerator:
 
     @staticmethod
     def _get_owner_text(msg):
+        LOGGER.info("Getting Owner text from message %s", msg)
         msg_values = msg.split("\n")
         # quick and dirty method --
         try:
@@ -65,16 +67,19 @@ class MsgGenerator:
             if owner_text.startswith("Owner"):
                 return owner_text
         except IndexError as err:
+            LOGGER.debug("WARNING: Owner text not found in message")
             raise RequestParsingException("Owner text not found %s" % err)
         return None
 
     def get_owner_name(self, request_text):
+        LOGGER.info("Getting Win Owner Member Name")
         text = self._get_owner_text(request_text)
         owner_name = text.split(":", 1)[1]
         owner_name = owner_name.strip().replace("*", "")
         return owner_name
 
     def get_owner_member_id(self, owner_name):
+        LOGGER.info("Getting Win Owner Member ID")
         members = self.members_store.channel_members
         found = members.get(owner_name, None)
         if found:
@@ -94,6 +99,7 @@ class MsgGenerator:
                 # Dalton in name: adalton
                 if part in value["real_name"] or part in value["name"]:
                     return member_id
+        LOGGER.debug("WARNING: Owner of win not found")
         raise MemberNotFoundException("Owner %s not found" % owner_name)
 
     def _get_winner_msg(self, request_text):
@@ -101,6 +107,7 @@ class MsgGenerator:
         owner_member_id = self.get_owner_member_id(owner_name)
 
         if owner_member_id:
+            LOGGER.info("Responding to Owner")
             msg = "Congrats <@{}>! ".format(owner_member_id)
             msg += "please fill out the form {}".format(config.GOOGLE_FORM_URL)
             self.client.chat_postMessage(channel=owner_member_id,
@@ -112,6 +119,9 @@ class MsgGenerator:
     def get_winner_msg(self, request_form):
         request_text = request_form["text"]
         try:
+            LOGGER.info("Attempting to Send Winner Message")
             return self._get_winner_msg(request_text)
-        except (RequestParsingException, MemberNotFoundException):
+        except (RequestParsingException, MemberNotFoundException) as error:
+            LOGGER.debug("WARNING: Attempt to Send Winner Message FAILED")
+            LOGGER.exception("WARNING: %s", error)
             return None

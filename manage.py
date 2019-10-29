@@ -1,15 +1,9 @@
-#!/usr/bin/env python
-
 import logging
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from winbot.app import AppFactory
+
 
 logger = logging.getLogger(__name__)
 
 logger.info("Starting up Winbot app")
-
 app = AppFactory.create()
-app.run()
