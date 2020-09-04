@@ -22,12 +22,12 @@ class MembersCache():
     def __init__(self):
         self.client = SLACK_CONN
         self.__all_slack_members = self.client.users_list().data["members"]
-        self.__channel_members = self.client.channels_info(
-            channel=config.SLACK_CHANNEL_ID).data["channel"]["members"]
+        self.__channel_members = self.client.conversations_members(
+            channel=config.SLACK_CHANNEL_ID)["members"]
 
     def refresh_channel_members(self):
-        c_members = self.client.channels_info(
-            channel=config.SLACK_CHANNEL_ID).data["channels"]["members"]
+        c_members = self.client.conversations_members(
+            channel=config.SLACK_CHANNEL_ID)["members"]
 
         channel_delta = len(c_members) - len(self.__channel_members)
 
