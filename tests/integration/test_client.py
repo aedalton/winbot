@@ -24,7 +24,6 @@ def test_channel_members():
 
 
 def test_client(app_fixture):
-    print("entering")
-    app_fixture.get('/health')
-    print("okay")
+    response = app_fixture.get('/health')
+    print(response.data)
     
